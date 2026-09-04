@@ -7,6 +7,7 @@
 - Frontend: Vue 3 + Vite (JavaScript, SPA)
 - Backend: Django + Django REST Framework
 - Database: PostgreSQL
+- UI: Spark Admin Theme (Bootstrap 5, ThemeWagon — UI 푸터에 출처 표기)
 
 ## 사전 요구사항
 

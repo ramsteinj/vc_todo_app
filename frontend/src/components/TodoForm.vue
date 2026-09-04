@@ -36,12 +36,29 @@ async function submit() {
 
 <template>
   <form class="todo-form" @submit.prevent="submit">
-    <input v-model="title" type="text" placeholder="할 일 제목" />
-    <input v-model="description" type="text" placeholder="설명 (선택)" />
-    <button type="submit" :disabled="isSubmitting">
+    <input
+      v-model="title"
+      type="text"
+      class="form-control-custom"
+      placeholder="할 일 제목"
+    />
+    <input
+      v-model="description"
+      type="text"
+      class="form-control-custom"
+      placeholder="설명 (선택)"
+    />
+    <button
+      type="submit"
+      class="btn-custom btn-custom-primary"
+      :disabled="isSubmitting"
+    >
+      <i class="bi bi-plus-lg"></i>
       {{ isSubmitting ? "저장 중..." : "추가" }}
     </button>
-    <p v-if="errorMessage" class="form-error">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="form-feedback-custom form-error">
+      {{ errorMessage }}
+    </p>
   </form>
 </template>
 
@@ -49,24 +66,24 @@ async function submit() {
 .todo-form {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
 }
-.todo-form input {
+.todo-form .form-control-custom {
   flex: 1 1 160px;
+  width: auto;
   min-width: 0;
 }
-.todo-form button {
+.todo-form .btn-custom {
   flex-shrink: 0;
 }
 .form-error {
   flex-basis: 100%;
-  color: #c0392b;
   margin: 0;
 }
-@media (max-width: 480px) {
-  .todo-form input,
-  .todo-form button {
+@media (max-width: 576px) {
+  .todo-form .form-control-custom,
+  .todo-form .btn-custom {
     flex-basis: 100%;
   }
 }

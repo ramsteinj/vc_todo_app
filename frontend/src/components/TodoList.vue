@@ -41,44 +41,74 @@ onMounted(loadTodos);
 
 <template>
   <section class="todo-list">
-    <TodoForm @created="onCreated" />
-    <p v-if="isLoading" class="status">불러오는 중...</p>
-    <p v-else-if="errorMessage" class="status error">
-      {{ errorMessage }}
-      <button type="button" @click="loadTodos">다시 시도</button>
-    </p>
-    <p v-else-if="todos.length === 0" class="status">등록된 할 일이 없습니다.</p>
-    <ul v-else>
-      <TodoItem
-        v-for="todo in todos"
-        :key="todo.id"
-        :todo="todo"
-        @updated="onUpdated"
-        @deleted="onDeleted"
-      />
-    </ul>
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">할 일 목록</h2>
+        <span v-if="!isLoading && !errorMessage" class="todo-count">{{
+          todos.length
+        }}</span>
+      </div>
+
+      <TodoForm @created="onCreated" />
+
+      <p v-if="isLoading" class="todo-status-message">
+        <i class="bi bi-arrow-repeat"></i> 불러오는 중...
+      </p>
+      <div v-else-if="errorMessage" class="alert-custom alert-custom-danger">
+        <i class="bi bi-exclamation-triangle"></i>
+        <div class="alert-custom-content">{{ errorMessage }}</div>
+        <button
+          type="button"
+          class="btn-custom btn-custom-sm btn-custom-outline-secondary retry-btn"
+          @click="loadTodos"
+        >
+          다시 시도
+        </button>
+      </div>
+      <div v-else-if="todos.length === 0" class="alert-custom alert-custom-info">
+        <i class="bi bi-inbox"></i>
+        <div class="alert-custom-content">등록된 할 일이 없습니다.</div>
+      </div>
+      <ul v-else class="transaction-list list-unstyled m-0">
+        <TodoItem
+          v-for="todo in todos"
+          :key="todo.id"
+          :todo="todo"
+          @updated="onUpdated"
+          @deleted="onDeleted"
+        />
+      </ul>
+    </div>
   </section>
 </template>
 
 <style scoped>
-.todo-list ul {
-  list-style: none;
+.todo-count {
+  background-color: var(--brand-lime-translucent);
+  color: var(--brand-forest-medium);
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 50rem;
+  padding: 0.15rem 0.65rem;
+}
+.todo-status-message {
+  color: var(--text-muted-green);
   margin: 0;
-  padding: 0;
-  background: #fff;
-  border: 1px solid #dfe3e8;
-  border-radius: 8px;
-  overflow: hidden;
 }
-.status {
-  background: #fff;
-  border: 1px dashed #c9ced6;
-  border-radius: 8px;
-  padding: 1rem;
-  color: #666;
+.todo-status-message .bi {
+  display: inline-block;
+  animation: todo-spin 1s linear infinite;
 }
-.status.error {
-  color: #c0392b;
-  border-color: #e6b0aa;
+@keyframes todo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.retry-btn {
+  margin-left: auto;
+  flex-shrink: 0;
 }
 </style>

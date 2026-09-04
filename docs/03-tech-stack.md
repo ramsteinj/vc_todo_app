@@ -11,7 +11,7 @@ Frontend 개발 서버 및 빌드 도구.
 ### HTML5
 Web Application의 기본 마크업.
 
-### CSS3
+### Bootstrap v5.0
 화면 스타일과 Responsive Layout 구현.
 
 ### JavaScript
