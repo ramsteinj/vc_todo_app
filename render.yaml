@@ -4,6 +4,7 @@
 services:
   - type: web
     name: vc-todo-backend
+    plan: free
     runtime: python
     rootDir: backend
     buildCommand: "./build.sh"
@@ -29,6 +30,7 @@ services:
 
   - type: web
     name: vc-todo-frontend
+    plan: free
     runtime: static
     rootDir: frontend
     buildCommand: "npm install && npm run build"
