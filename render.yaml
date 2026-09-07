@@ -1,0 +1,43 @@
+# Render Blueprint
+# Render Dashboard > New > Blueprint 로 이 저장소를 선택하면 아래 정의대로 생성된다.
+# sync: false 인 환경변수는 첫 배포 후 실제 URL을 확인하고 입력한다.
+services:
+  - type: web
+    name: vc-todo-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn project.wsgi:application"
+    healthCheckPath: "/api/todos/"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "false"
+      - key: ALLOWED_HOSTS
+        sync: false # 예: vc-todo-backend.onrender.com (첫 배포 후 실제 호스트로 입력)
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false # 예: https://vc-todo-frontend.onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false # 예: https://vc-todo-backend.onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: vc-todo-db
+          property: connectionString
+
+  - type: web
+    name: vc-todo-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false # 예: https://vc-todo-backend.onrender.com (첫 배포 후 입력)
+
+databases:
+  - name: vc-todo-db
+    databaseName: vc_todo_app
+    plan: free

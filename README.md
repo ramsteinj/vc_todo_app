@@ -104,3 +104,59 @@ Frontend 프로덕션 빌드:
 cd frontend
 npm run build
 ```
+
+## 6. Render 배포
+
+Render Blueprint(`render.yaml`)로 Frontend(Static Site), Backend(Web Service), PostgreSQL 3개 리소스를 한 번에 생성합니다. 사전에 이 저장소가 GitHub에 푸시되어 있어야 합니다.
+
+### 6-1. Blueprint로 생성
+
+1. https://dashboard.render.com 에 로그인합니다.
+2. **New → Blueprint** 를 선택하고 이 저장소를 연결합니다.
+3. Blueprint가 감지되면 **Apply** 를 누릅니다. `render.yaml` 정의대로 3개 리소스가 생성되고 첫 배포가 시작됩니다.
+   - `sync: false` 환경변수는 지금 비워 두어도 됩니다. 배포 후 입력합니다.
+
+### 6-2. 실제 URL 확인
+
+첫 배포가 끝나면 각 서비스 페이지 상단에서 실제 주소를 확인합니다. (서비스 이름이 이미 사용 중이면 임의 접미사가 붙을 수 있습니다.)
+
+- Backend 예시: `https://vc-todo-backend.onrender.com`
+- Frontend 예시: `https://vc-todo-frontend.onrender.com`
+
+### 6-3. 환경변수 연결 (각 서비스 Environment 탭)
+
+Backend(`vc-todo-backend`):
+
+| 키 | 값 |
+| --- | --- |
+| `ALLOWED_HOSTS` | Backend 호스트 (예: `vc-todo-backend.onrender.com`) |
+| `CORS_ALLOWED_ORIGINS` | Frontend 주소 (예: `https://vc-todo-frontend.onrender.com`) |
+| `CSRF_TRUSTED_ORIGINS` | Backend 주소 (예: `https://vc-todo-backend.onrender.com`) |
+
+Frontend(`vc-todo-frontend`):
+
+| 키 | 값 |
+| --- | --- |
+| `VITE_API_URL` | Backend 주소 (예: `https://vc-todo-backend.onrender.com`) |
+
+저장 후 두 서비스 모두 **Manual Deploy → Deploy latest commit** 으로 재배포합니다. Frontend는 빌드타임에 `VITE_API_URL`을 주입하므로 반드시 재빌드가 필요합니다.
+
+### 6-4. 동작 확인
+
+1. 브라우저에서 Frontend 주소에 접속해 Todo 추가/수정/삭제를 확인합니다.
+2. `https://<backend 주소>/api/todos/` 에 직접 접속해 JSON 응답을 확인합니다.
+
+### 6-5. (선택) Django admin
+
+Render 서비스 페이지의 **Shell** 에서 슈퍼유저를 만듭니다.
+
+```bash
+python manage.py createsuperuser
+```
+
+이후 `https://<backend 주소>/admin/` 에 접속합니다.
+
+### Free 플랜 주의사항
+
+- 무료 Web Service는 15분간 요청이 없으면 sleep하며, 첫 요청이 수십 초 늦을 수 있습니다.
+- 무료 PostgreSQL은 생성 후 약 30일 뒤 만료되어 데이터가 삭제됩니다. 장기 사용 시 유료 플랜으로 전환하거나 데이터를 백업한 뒤 DB를 재생성해야 합니다.
