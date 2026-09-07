@@ -5,6 +5,7 @@ services:
   - type: web
     name: vc-todo-backend
     runtime: python
+    plan: free
     rootDir: backend
     buildCommand: "./build.sh"
     startCommand: "gunicorn project.wsgi:application"
